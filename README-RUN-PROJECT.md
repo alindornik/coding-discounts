@@ -5,7 +5,8 @@
 
 ## Start the project
 1. run command in terminal `docker-compose up --build`
-2. run command in terminal `composer dump-autoload`
+2. run command in terminal `composer install && composer dump-autoload`
+3. run test `vendor/bin/phpunit tests`
 
 ## Usage of API
 
