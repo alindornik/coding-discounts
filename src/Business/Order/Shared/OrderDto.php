@@ -1,6 +1,8 @@
 <?php
 
-namespace Src\OrdersDiscounts\Shared;
+namespace Src\Business\Order\Shared;
+
+use Src\Business\OrderItem\Shared\OrderItemDto;
 
 class OrderDto
 {
@@ -8,6 +10,8 @@ class OrderDto
     public int $customerId;
     public array $items = [];
     public float $total;
+    public float $totalAfterDiscount;
+    public float $customerDiscount;
 
     public function setId(int $id)
     {
@@ -47,5 +51,25 @@ class OrderDto
     public function getTotal(): float
     {
         return $this->total;
+    }
+
+    public function getCustomerDiscount(): float
+    {
+        return $this->customerDiscount;
+    }
+
+    public function setCustomerDiscount(float $customerDiscount): void
+    {
+        $this->customerDiscount = $customerDiscount;
+    }
+
+    public function getTotalAfterDiscount(): float
+    {
+        return $this->totalAfterDiscount;
+    }
+
+    public function setTotalAfterDiscount(float $totalAfterDiscount): void
+    {
+        $this->totalAfterDiscount = $totalAfterDiscount;
     }
 }

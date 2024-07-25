@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Api;
+namespace Src\Api\Routing;
 
 use Src\Api\Http\Request;
 use Src\Api\Http\Response;
@@ -21,16 +21,11 @@ class Router {
         }
 
         //todo extend to handle 404 and 405(method not allowed), for now just 404
-        $this->handleNotFound();
+        $this->sendJsonResponse(new Response(404, json_encode(['error' => 'Not Found'])));
     }
 
     public function sendJsonResponse(Response $response) {
         http_response_code($response->getStatusCode());
         echo $response->getBody();
-    }
-
-    protected function handleNotFound() {
-        http_response_code(404);
-        echo "404 Not Found";
     }
 }

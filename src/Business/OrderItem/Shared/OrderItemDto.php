@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\OrdersDiscounts\Shared;
+namespace Src\Business\OrderItem\Shared;
 
 class OrderItemDto
 {

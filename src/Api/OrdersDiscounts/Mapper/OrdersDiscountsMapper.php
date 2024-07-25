@@ -1,13 +1,17 @@
 <?php
 
-namespace Src\OrdersDiscounts\Mapper;
+namespace Src\Api\OrdersDiscounts\Mapper;
 
-use Src\OrdersDiscounts\Shared\OrderDto;
-use Src\OrdersDiscounts\Shared\OrderItemDto;
+use Src\Business\Order\Shared\OrderDto;
+use Src\Business\OrderItem\Shared\OrderItemDto;
 
 class OrdersDiscountsMapper
 {
-    public function mapBodyToOrderDto(array $body)
+    /**
+     * @param array $body
+     * @return array<OrderDto>
+     */
+    public function mapBodyToOrderDto(array $body): array
     {
         $orderList = [];
         foreach ($body['orders'] as $orderData) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\OrdersDiscounts\Validator;
+namespace Src\Api\OrdersDiscounts\Validator;
 
 class OrdersDiscountsBodyValidator
 {
