@@ -5,7 +5,9 @@ namespace Business\Order\Calculator;
 use PHPUnit\Framework\TestCase;
 use Src\Business\Customer\CustomerFacadeInterface;
 use Src\Business\Customer\Shared\CustomerDto;
+use Src\Business\Discount\Shared\DiscountDto;
 use Src\Business\Order\Calculator\CustomerOrderOverLimitDiscountCalculator;
+use Src\Business\Order\OrderConfig;
 use Src\Business\Order\Shared\OrderDto;
 
 class CustomerOrderOverLimitDiscountCalculatorTest extends TestCase
@@ -16,7 +18,15 @@ class CustomerOrderOverLimitDiscountCalculatorTest extends TestCase
     protected function setUp(): void
     {
         $this->customerFacade = $this->createMock(CustomerFacadeInterface::class);
-        $this->calculator = new CustomerOrderOverLimitDiscountCalculator($this->customerFacade);
+
+        $discountConfig = OrderConfig::getCustomerOverLimitDiscountConfig();
+        $biggerDiscountConfig = new DiscountDto();
+        $biggerDiscountConfig->setLimit(1200);
+        $biggerDiscountConfig->setPercentage(0.2);
+        $biggerDiscountConfig->setActive(true);
+        $discountConfig[] = $biggerDiscountConfig;
+
+        $this->calculator = new CustomerOrderOverLimitDiscountCalculator($this->customerFacade, $discountConfig);
     }
 
     public function testCalculateCustomerDiscountForCustomerRevenueAboveLimit()
@@ -38,8 +48,8 @@ class CustomerOrderOverLimitDiscountCalculatorTest extends TestCase
         // Assert
         $this->assertCount(1, $orderList);
         $resultOrder = $orderList[0];
-        $this->assertEquals(200.0, $resultOrder->getCustomerDiscount());
-        $this->assertEquals(1800.0, $resultOrder->getTotalAfterDiscount());
+        // the higher discount should be applied
+        $this->assertEquals(400.0, $resultOrder->getCustomerOverLimitDiscount());
     }
 
     public function testCalculateCustomerDiscountForCustomerRevenueBelowLimit()
@@ -56,10 +66,7 @@ class CustomerOrderOverLimitDiscountCalculatorTest extends TestCase
         $this->customerFacade->method('getCustomerById')->with($customerId)->willReturn($customer);
 
         $order->expects($this->never())
-            ->method('setCustomerDiscount');
-
-        $order->expects($this->never())
-            ->method('setTotalAfterDiscount');
+            ->method('setCustomerOverLimitDiscount');
 
         // Act
         $orderList = $this->calculator->calculate([$order]);

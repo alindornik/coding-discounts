@@ -3,13 +3,13 @@
 namespace Src\Business\Order\Calculator;
 
 use Src\Business\Customer\CustomerFacadeInterface;
+use Src\Business\Customer\Shared\CustomerDto;
+use Src\Business\Discount\Shared\DiscountDto;
+use Src\Business\Order\Shared\OrderDto;
 
 class CustomerOrderOverLimitDiscountCalculator implements DiscountCalculatorInterface
 {
-    protected const REVENUE_LIMIT = 1000;
-    protected const DISCOUNT = 0.1;
-
-    public function __construct(protected CustomerFacadeInterface $customerFacade)
+    public function __construct(protected CustomerFacadeInterface $customerFacade, protected array $discountConfig)
     {
     }
 
@@ -22,13 +22,32 @@ class CustomerOrderOverLimitDiscountCalculator implements DiscountCalculatorInte
         foreach ($orderList as $order) {
             //todo: cache customer data to not query for each order
             $customer = $this->customerFacade->getCustomerById($order->getCustomerId());
-            if ($customer->getRevenue() > self::REVENUE_LIMIT) {
-                //todo: replace round with some kind of rounding strategy to not lose precision
-                $order->setCustomerDiscount(round($order->getTotal() * self::DISCOUNT, 2));
-                $order->setTotalAfterDiscount($order->getTotal() - $order->getCustomerDiscount());
+            if ($customer === null) {
+                continue;
+            }
+
+            foreach ($this->discountConfig as $discountConfig) {
+                if ($discountConfig->isActive() === false) {
+                    continue;
+                }
+
+                $this->calculateDiscount($customer, $discountConfig, $order);
             }
         }
 
         return $orderList;
+    }
+
+    private function calculateDiscount(CustomerDto $customer, DiscountDto $discountConfig, OrderDto $order): void
+    {
+        if ($customer->getRevenue() > $discountConfig->getLimit()) {
+            //todo: replace round with some kind of rounding strategy to not lose precision
+            $discountAmount = round($order->getTotal() * $discountConfig->getPercentage(), 2);
+
+            //apply the highest discount
+            if ($discountAmount > $order->getCustomerOverLimitDiscount()) {
+                $order->setCustomerOverLimitDiscount($discountAmount);
+            }
+        }
     }
 }

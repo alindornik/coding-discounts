@@ -9,7 +9,7 @@ class OrderItemDto
     public float $unitPrice;
     public float $total;
 
-    public function setProductId(string $productId)
+    public function setProductId(string $productId): void
     {
         $this->productId = $productId;
     }
@@ -19,7 +19,7 @@ class OrderItemDto
         return $this->productId;
     }
 
-    public function setQuantity(int $quantity)
+    public function setQuantity(int $quantity): void
     {
         $this->quantity = $quantity;
     }
@@ -29,7 +29,7 @@ class OrderItemDto
         return $this->quantity;
     }
 
-    public function setUnitPrice(float $unitPrice)
+    public function setUnitPrice(float $unitPrice): void
     {
         $this->unitPrice = $unitPrice;
     }
@@ -39,7 +39,7 @@ class OrderItemDto
         return $this->unitPrice;
     }
 
-    public function setTotal(float $total)
+    public function setTotal(float $total): void
     {
         $this->total = $total;
     }

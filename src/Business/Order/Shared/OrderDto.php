@@ -11,7 +11,29 @@ class OrderDto
     public array $items = [];
     public float $total;
     public float $totalAfterDiscount;
-    public float $customerDiscount;
+    public float $customerOverLimitDiscount = 0;
+    public float $productCategoryQuantityDiscount = 0;
+    public float $productCategoryPercentageOfCheapestDiscount = 0;
+
+    public function getProductCategoryPercentageOfCheapestDiscount(): float
+    {
+        return $this->productCategoryPercentageOfCheapestDiscount;
+    }
+
+    public function setProductCategoryPercentageOfCheapestDiscount(float $productCategoryPercentageOfCheapestDiscount): void
+    {
+        $this->productCategoryPercentageOfCheapestDiscount = $productCategoryPercentageOfCheapestDiscount;
+    }
+
+    public function getProductCategoryQuantityDiscount(): float
+    {
+        return $this->productCategoryQuantityDiscount;
+    }
+
+    public function setProductCategoryQuantityDiscount(float $productCategoryQuantityDiscount): void
+    {
+        $this->productCategoryQuantityDiscount = $productCategoryQuantityDiscount;
+    }
 
     public function setId(int $id)
     {
@@ -53,14 +75,14 @@ class OrderDto
         return $this->total;
     }
 
-    public function getCustomerDiscount(): float
+    public function getCustomerOverLimitDiscount(): float
     {
-        return $this->customerDiscount;
+        return $this->customerOverLimitDiscount;
     }
 
-    public function setCustomerDiscount(float $customerDiscount): void
+    public function setCustomerOverLimitDiscount(float $customerOverLimitDiscount): void
     {
-        $this->customerDiscount = $customerDiscount;
+        $this->customerOverLimitDiscount = $customerOverLimitDiscount;
     }
 
     public function getTotalAfterDiscount(): float
