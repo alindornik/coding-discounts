@@ -3,6 +3,7 @@
 namespace Business\Order\Calculator;
 
 use PHPUnit\Framework\TestCase;
+use Src\Business\Discount\Shared\DiscountType;
 use Src\Business\Order\Calculator\ProductCategoryQuantityDiscountCalculator;
 use Src\Business\Order\Shared\OrderDto;
 use Src\Business\OrderItem\Shared\OrderItemDto;
@@ -36,7 +37,7 @@ class ProductCategoryQuantityDiscountCalculatorTest extends TestCase
         $orderList = $calculator->calculate([$order]);
 
         // Assert
-        $this->assertEquals(11.0, $orderList[0]->getProductCategoryQuantityDiscount());
+        $this->assertEquals(11.0, $orderList[0]->findDiscountByType(DiscountType::PRODUCT_CATEGORY_QUANTITY)->getValue());
     }
 
     private function createOrderWithItems(array $items): OrderDto

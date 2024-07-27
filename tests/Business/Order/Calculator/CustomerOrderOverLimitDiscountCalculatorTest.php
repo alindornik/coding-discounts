@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Src\Business\Customer\CustomerFacadeInterface;
 use Src\Business\Customer\Shared\CustomerDto;
 use Src\Business\Discount\Shared\DiscountDto;
+use Src\Business\Discount\Shared\DiscountType;
 use Src\Business\Order\Calculator\CustomerOrderOverLimitDiscountCalculator;
-use Src\Business\Order\OrderConfig;
 use Src\Business\Order\Shared\OrderDto;
 
 class CustomerOrderOverLimitDiscountCalculatorTest extends TestCase
@@ -19,12 +19,17 @@ class CustomerOrderOverLimitDiscountCalculatorTest extends TestCase
     {
         $this->customerFacade = $this->createMock(CustomerFacadeInterface::class);
 
-        $discountConfig = OrderConfig::getCustomerOverLimitDiscountConfig();
         $biggerDiscountConfig = new DiscountDto();
         $biggerDiscountConfig->setLimit(1200);
         $biggerDiscountConfig->setPercentage(0.2);
         $biggerDiscountConfig->setActive(true);
-        $discountConfig[] = $biggerDiscountConfig;
+
+        $smallerDiscountConfig = new DiscountDto();
+        $smallerDiscountConfig->setLimit(1000);
+        $smallerDiscountConfig->setPercentage(0.1);
+        $smallerDiscountConfig->setActive(true);
+
+        $discountConfig = [$smallerDiscountConfig, $biggerDiscountConfig];
 
         $this->calculator = new CustomerOrderOverLimitDiscountCalculator($this->customerFacade, $discountConfig);
     }
@@ -49,7 +54,7 @@ class CustomerOrderOverLimitDiscountCalculatorTest extends TestCase
         $this->assertCount(1, $orderList);
         $resultOrder = $orderList[0];
         // the higher discount should be applied
-        $this->assertEquals(400.0, $resultOrder->getCustomerOverLimitDiscount());
+        $this->assertEquals(400.0, $resultOrder->findDiscountByType(DiscountType::CUSTOMER_OVER_LIMIT)->getValue());
     }
 
     public function testCalculateCustomerDiscountForCustomerRevenueBelowLimit()
@@ -65,13 +70,12 @@ class CustomerOrderOverLimitDiscountCalculatorTest extends TestCase
 
         $this->customerFacade->method('getCustomerById')->with($customerId)->willReturn($customer);
 
-        $order->expects($this->never())
-            ->method('setCustomerOverLimitDiscount');
-
         // Act
         $orderList = $this->calculator->calculate([$order]);
 
         // Assert
-        $this->assertSame($orderList, [$order]);
+        $this->assertCount(1, $orderList);
+        $resultOrder = $orderList[0];
+        $this->assertNull($resultOrder->findDiscountByType(DiscountType::CUSTOMER_OVER_LIMIT));
     }
 }

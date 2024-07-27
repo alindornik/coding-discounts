@@ -4,6 +4,7 @@ namespace Business\Order\Calculator;
 
 use PHPUnit\Framework\TestCase;
 use Src\Business\Discount\Shared\DiscountDto;
+use Src\Business\Discount\Shared\DiscountType;
 use Src\Business\Order\Calculator\ProductCategoryPercentageOfCheapestDiscountCalculator;
 use Src\Business\Order\Shared\OrderDto;
 use Src\Business\OrderItem\Shared\OrderItemDto;
@@ -37,7 +38,7 @@ class ProductCategoryPercentageOfCheapestDiscountCalculatorTest extends TestCase
         $orderList = $calculator->calculate([$order]);
 
         // Assert
-        $this->assertEquals(1.2, round($orderList[0]->getProductCategoryPercentageOfCheapestDiscount(), 2));
+        $this->assertEquals(1.2, round($orderList[0]->findDiscountByType(DiscountType::PRODUCT_CATEGORY_PERCENTAGE_OF_CHEAPEST)->getValue(), 2));
     }
 
     private function createOrderWithItems(array $items): OrderDto

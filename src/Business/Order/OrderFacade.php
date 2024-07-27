@@ -6,7 +6,6 @@ use Src\Business\Order\Calculator\OrdersDiscountsCalculatorInterface;
 
 class OrderFacade implements OrderFacadeInterface
 {
-
     public function __construct(protected OrdersDiscountsCalculatorInterface $ordersDiscountsCalculator)
     {
     }

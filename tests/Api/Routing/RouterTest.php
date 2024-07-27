@@ -5,7 +5,6 @@ namespace Api\Routing;
 use PHPUnit\Framework\TestCase;
 use Src\Api\Http\Request;
 use Src\Api\Http\Response;
-use Src\Api\Routing\Route;
 use Src\Api\Routing\Router;
 
 class RouterTest extends TestCase

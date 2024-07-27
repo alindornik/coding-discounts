@@ -2,6 +2,7 @@
 
 namespace Src\Business\Order\Shared;
 
+use Src\Business\Discount\Shared\DiscountType;
 use Src\Business\OrderItem\Shared\OrderItemDto;
 
 class OrderDto
@@ -10,30 +11,7 @@ class OrderDto
     public int $customerId;
     public array $items = [];
     public float $total;
-    public float $totalAfterDiscount;
-    public float $customerOverLimitDiscount = 0;
-    public float $productCategoryQuantityDiscount = 0;
-    public float $productCategoryPercentageOfCheapestDiscount = 0;
-
-    public function getProductCategoryPercentageOfCheapestDiscount(): float
-    {
-        return $this->productCategoryPercentageOfCheapestDiscount;
-    }
-
-    public function setProductCategoryPercentageOfCheapestDiscount(float $productCategoryPercentageOfCheapestDiscount): void
-    {
-        $this->productCategoryPercentageOfCheapestDiscount = $productCategoryPercentageOfCheapestDiscount;
-    }
-
-    public function getProductCategoryQuantityDiscount(): float
-    {
-        return $this->productCategoryQuantityDiscount;
-    }
-
-    public function setProductCategoryQuantityDiscount(float $productCategoryQuantityDiscount): void
-    {
-        $this->productCategoryQuantityDiscount = $productCategoryQuantityDiscount;
-    }
+    public array $orderDiscounts = [];
 
     public function setId(int $id)
     {
@@ -75,23 +53,22 @@ class OrderDto
         return $this->total;
     }
 
-    public function getCustomerOverLimitDiscount(): float
+    public function getOrderDiscounts(): array
     {
-        return $this->customerOverLimitDiscount;
+        return $this->orderDiscounts;
     }
 
-    public function setCustomerOverLimitDiscount(float $customerOverLimitDiscount): void
+    public function addOrderDiscounts(DiscountOrderDto $orderDiscount): void
     {
-        $this->customerOverLimitDiscount = $customerOverLimitDiscount;
+        $this->orderDiscounts[] = $orderDiscount;
     }
 
-    public function getTotalAfterDiscount(): float
+    public function findDiscountByType(DiscountType $type): ?DiscountOrderDto
     {
-        return $this->totalAfterDiscount;
-    }
+        $filtered_array = array_filter($this->getOrderDiscounts(), function ($obj) use ($type) {
+            return $obj->getType() == $type;
+        });
 
-    public function setTotalAfterDiscount(float $totalAfterDiscount): void
-    {
-        $this->totalAfterDiscount = $totalAfterDiscount;
+        return reset($filtered_array) ?: null;
     }
 }

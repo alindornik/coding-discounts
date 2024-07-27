@@ -4,6 +4,7 @@ use DI\ContainerBuilder;
 use Src\Api\OrdersDiscounts\Controller\OrdersDiscountsController;
 use Src\Business\Customer\CustomerFacade;
 use Src\Business\Customer\Persistence\CustomerRepository;
+use Src\Business\Discount\DiscountConfig;
 use Src\Business\Order\Calculator\CustomerOrderOverLimitDiscountCalculator;
 use Src\Business\Order\Calculator\OrdersDiscountsCalculator;
 use Src\Business\Order\Calculator\ProductCategoryPercentageOfCheapestDiscountCalculator;
@@ -23,11 +24,11 @@ function buildDiConfig(ContainerBuilder $containerBuilder) {
             ->constructor(productRepository: \DI\get('ProductRepository')),
 
         'CustomerOrderOverLimitDiscountCalculator' => \DI\autowire(CustomerOrderOverLimitDiscountCalculator::class)
-            ->constructor(customerFacade: \DI\get('CustomerFacade'), discountConfig: OrderConfig::getCustomerOverLimitDiscountConfig()),
+            ->constructor(customerFacade: \DI\get('CustomerFacade'), discountConfig: DiscountConfig::getCustomerOverLimitDiscountConfig()),
         'ProductCategoryQuantityDiscountCalculator' => \DI\autowire(ProductCategoryQuantityDiscountCalculator::class)
-            ->constructor(productFacade: \DI\get('ProductFacade'), discountConfig: OrderConfig::getProductCatergoryQuantityDiscountConfig()),
+            ->constructor(productFacade: \DI\get('ProductFacade'), discountConfig: DiscountConfig::getProductCatergoryQuantityDiscountConfig()),
         'ProductCategoryPercentageOfCheapestDiscountCalculator' => \DI\autowire(ProductCategoryPercentageOfCheapestDiscountCalculator::class)
-            ->constructor(productFacade: \DI\get('ProductFacade'), discountConfig: OrderConfig::getProductCategoryPercentageOfCheapestDiscountConfig()),
+            ->constructor(productFacade: \DI\get('ProductFacade'), discountConfig: DiscountConfig::getProductCategoryPercentageOfCheapestDiscountConfig()),
 
         'OrdersDiscountsController' => \DI\autowire(OrdersDiscountsController::class)
             ->constructor(ordersFacade: \DI\get('OrderFacade')),

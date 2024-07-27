@@ -5,6 +5,8 @@ namespace Src\Business\Order\Calculator;
 use Src\Business\Customer\CustomerFacadeInterface;
 use Src\Business\Customer\Shared\CustomerDto;
 use Src\Business\Discount\Shared\DiscountDto;
+use Src\Business\Discount\Shared\DiscountType;
+use Src\Business\Order\Shared\DiscountOrderDto;
 use Src\Business\Order\Shared\OrderDto;
 
 class CustomerOrderOverLimitDiscountCalculator implements DiscountCalculatorInterface
@@ -45,8 +47,16 @@ class CustomerOrderOverLimitDiscountCalculator implements DiscountCalculatorInte
             $discountAmount = round($order->getTotal() * $discountConfig->getPercentage(), 2);
 
             //apply the highest discount
-            if ($discountAmount > $order->getCustomerOverLimitDiscount()) {
-                $order->setCustomerOverLimitDiscount($discountAmount);
+            $orderDiscountDto = $order->findDiscountByType(DiscountType::CUSTOMER_OVER_LIMIT);
+            if ($orderDiscountDto === null) {
+                $orderDiscountDto = new DiscountOrderDto();
+                $orderDiscountDto->setType(DiscountType::CUSTOMER_OVER_LIMIT);
+                $orderDiscountDto->setValue($discountAmount);
+                $order->addOrderDiscounts($orderDiscountDto);
+            }
+
+            if ($discountAmount > $orderDiscountDto->getValue()) {
+                $orderDiscountDto->setValue($discountAmount);
             }
         }
     }
